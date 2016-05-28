@@ -27,20 +27,59 @@ class ProductAdmin(admin.ModelAdmin):
                     )
 
 
-# class FeatureInline(admin.TabularInline):
-#     model = models.ProductType.features.through
-
-
 class ProductTypeAdmin(admin.ModelAdmin):
-    # inlines = [
-    #     FeatureInline,
-    # ]
     list_display = (
-                    'id',
-                    'name',
+                'id',
+                'name',
 
-                    )
+                )
+
+
+class UserAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+    )
+
+
+class ScoreAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+    )
+
+
+class ReviewScoreInline(admin.TabularInline):
+    model = models.ReviewScore
+
+
+class ReviewAdmin(admin.ModelAdmin):
+    inlines = [
+        ReviewScoreInline,
+    ]
+    date_hierarchy = 'time'
+    list_filter = (
+        'product__type__name',
+    )
+    list_display = (
+        'time',
+        'get_type',
+        'product',
+        'user',
+        'text',
+
+    )
+
+    def get_type(self, obj):
+        return obj.product.type
+
+    get_type.short_description = 'Type'
+    get_type.admin_order_field = 'product__type'
+
 
 admin.site.register(models.Product, ProductAdmin)
 admin.site.register(models.ProductType, ProductTypeAdmin)
 admin.site.register(models.Feature, FeatureAdmin)
+admin.site.register(models.User, UserAdmin)
+admin.site.register(models.Score, ScoreAdmin)
+admin.site.register(models.Review, ReviewAdmin)
+
+
