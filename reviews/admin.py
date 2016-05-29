@@ -31,7 +31,9 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = (
         'name',
     )
-
+    list_filter = (
+        'type__name',
+    )
 
 class ProductTypeAdmin(admin.ModelAdmin):
     list_display = (
