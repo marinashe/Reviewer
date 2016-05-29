@@ -9,6 +9,9 @@ class FeatureAdmin(admin.ModelAdmin):
                     'name',
 
                     )
+    search_fields = (
+        'name',
+    )
 
 
 class ProductFeatureInline(admin.TabularInline):
@@ -25,6 +28,9 @@ class ProductAdmin(admin.ModelAdmin):
                     'name',
                     'description',
                     )
+    search_fields = (
+        'name',
+    )
 
 
 class ProductTypeAdmin(admin.ModelAdmin):
@@ -33,16 +39,25 @@ class ProductTypeAdmin(admin.ModelAdmin):
                 'name',
 
                 )
+    search_fields = (
+        'name',
+    )
 
 
 class UserAdmin(admin.ModelAdmin):
     list_display = (
         'name',
     )
+    search_fields = (
+        'name',
+    )
 
 
 class ScoreAdmin(admin.ModelAdmin):
     list_display = (
+        'name',
+    )
+    search_fields = (
         'name',
     )
 
@@ -58,6 +73,10 @@ class ReviewAdmin(admin.ModelAdmin):
     date_hierarchy = 'time'
     list_filter = (
         'product__type__name',
+    )
+    search_fields = (
+        'user__name',
+        'product__name',
     )
     list_display = (
         'time',
