@@ -13,7 +13,9 @@ class Feature(models.Model):
     type = models.ForeignKey(ProductType)
 
     def __str__(self):
-        return self.name
+        return '{}({})'.format(self.name, self.type.name)
+
+
 
 
 class Score(models.Model):
@@ -32,6 +34,8 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
 
 
 class ProductFeature(models.Model):

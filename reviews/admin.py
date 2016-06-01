@@ -36,6 +36,8 @@ class ProductAdmin(admin.ModelAdmin):
         'type__name',
     )
 
+
+
 class ProductTypeAdmin(admin.ModelAdmin):
     list_display = (
                 'id',
