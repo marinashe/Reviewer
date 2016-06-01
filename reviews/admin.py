@@ -7,6 +7,7 @@ class FeatureAdmin(admin.ModelAdmin):
     list_display = (
                     'id',
                     'name',
+                    'type'
 
                     )
     search_fields = (
@@ -58,6 +59,7 @@ class UserAdmin(admin.ModelAdmin):
 class ScoreAdmin(admin.ModelAdmin):
     list_display = (
         'name',
+        'type'
     )
     search_fields = (
         'name',

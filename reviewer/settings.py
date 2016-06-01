@@ -77,17 +77,23 @@ WSGI_APPLICATION = 'reviewer.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': os.environ['DATABASE_NAME'],
+#         'USER': os.environ['DATABASE_USER'],
+#         'PASSWORD': os.environ['DATABASE_PASSWORD'],
+#         'HOST': '',
+#         'PORT': '',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ['DATABASE_NAME'],
-        'USER': os.environ['DATABASE_USER'],
-        'PASSWORD': os.environ['DATABASE_PASSWORD'],
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
