@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class ProductType(models.Model):
@@ -16,14 +17,12 @@ class Feature(models.Model):
         return '{}({})'.format(self.name, self.type.name)
 
 
-
-
 class Score(models.Model):
     name = models.CharField(max_length=200)
     type = models.ForeignKey(ProductType)
 
     def __str__(self):
-        return self.name
+        return '{}({})'.format(self.name, self.type.name)
 
 
 class Product(models.Model):
@@ -44,17 +43,10 @@ class ProductFeature(models.Model):
     value = models.CharField(max_length=200)
 
 
-class User(models.Model):
-    name = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.name
-
-
 class Review(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     text = models.CharField(max_length=2000, null=True, blank=True)
     scores = models.ManyToManyField(Score, through='ReviewScore')
 

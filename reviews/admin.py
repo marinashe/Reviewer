@@ -49,15 +49,6 @@ class ProductTypeAdmin(admin.ModelAdmin):
     )
 
 
-class UserAdmin(admin.ModelAdmin):
-    list_display = (
-        'name',
-    )
-    search_fields = (
-        'name',
-    )
-
-
 class ScoreAdmin(admin.ModelAdmin):
     list_display = (
         'name',
@@ -103,7 +94,6 @@ class ReviewAdmin(admin.ModelAdmin):
 admin.site.register(models.Product, ProductAdmin)
 admin.site.register(models.ProductType, ProductTypeAdmin)
 admin.site.register(models.Feature, FeatureAdmin)
-admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Score, ScoreAdmin)
 admin.site.register(models.Review, ReviewAdmin)
 
