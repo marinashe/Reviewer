@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.conf import settings
 
@@ -34,7 +35,8 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-
+    def get_absolute_url(self):
+        return reverse("reviews:detail", args=(self.type.id, self.pk))
 
 
 class ProductFeature(models.Model):

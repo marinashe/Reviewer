@@ -25,10 +25,10 @@ class ProductView(ListView):
 class ProductDetail(SingleObjectMixin, ListView):
     page_title = 'Reviews'
     template_name = 'reviews/product_detail.html'
-
+    model = models.Review
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object(queryset=models.Product.objects.filter(id=self.kwargs.get('id')))
+        self.object = self.get_object(queryset=models.Product.objects.filter(id=self.kwargs.get('pk')))
         return super(ProductDetail, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -37,9 +37,6 @@ class ProductDetail(SingleObjectMixin, ListView):
         return context
 
     def get_queryset(self):
-        product_id = self.kwargs.get('id')
-        if product_id:
-            return models.Review.objects.filter(product__id=product_id)
-        return models.Review.objects.all()
+        return models.Review.objects.filter(product__id=self.object.id)
 
 

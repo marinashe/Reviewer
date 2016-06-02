@@ -6,7 +6,7 @@
         {% if object_list.count %}
             {% for object in object_list %}
 
-                 <a href="{% url 'reviews:detail' type=object.type.id id=object.id %}">
+                 <a href="{{ object.get_absolute_url }}">
                      <li class="list-group-item">
                          {{ object.name }}
                      </li>

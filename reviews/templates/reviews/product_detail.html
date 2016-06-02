@@ -3,10 +3,9 @@
 {% block content %}
 
     <h1>{{ product.name }}</h1>
-
     <ul class="list-group">
-        {% if page_obj.count %}
-            {% for object in page_obj %}
+        {% if object_list.count %}
+            {% for object in object_list %}
 
                 <li class="list-group-item">
                     {{ object.time }} {{ object.user }}
