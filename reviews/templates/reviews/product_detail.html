@@ -3,14 +3,21 @@
 {% block content %}
 
     <h1>{{ product.name }}</h1>
+    {% for feature in product.productfeature_set.all %}
+        {{ feature.feature.name }}: {{ feature.value }} <br>
+    {% endfor %}
     <ul class="list-group">
         {% if object_list.count %}
             {% for object in object_list %}
 
                 <li class="list-group-item">
-                    {{ object.time }} {{ object.user }}
+                    {{ object.time }} <b>{{ object.user }}</b>
                     <br>
+                    {% for score in object.reviewscore_set.all %}
+                        {{ score.score.name }} - {{ score.value }} <br>
+                    {% endfor %}
                     {{ object.text }}
+                    <br>
                 </li>
 
 
