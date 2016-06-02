@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>{{ product.name }}</h1>
+
+    <ul class="list-group">
+        {% if page_obj.count %}
+            {% for object in page_obj %}
+
+                <li class="list-group-item">
+                    {{ object.time }} {{ object.user }}
+                    <br>
+                    {{ object.text }}
+                </li>
+
+
+            {% endfor %}
+        {% else %}
+            No reviews.
+        {% endif %}
+    </ul>
+
+{% endblock %}
