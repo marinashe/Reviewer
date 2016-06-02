@@ -1,9 +1,9 @@
 from django.core.urlresolvers import reverse_lazy
-from django.shortcuts import render
-from django.views.generic import ListView
-from django.views.generic.detail import SingleObjectMixin
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView, CreateView
+from django.views.generic.detail import SingleObjectMixin, DetailView
 
-from . import models
+from . import models, forms
 
 
 class ProductTypeView(ListView):
@@ -11,15 +11,16 @@ class ProductTypeView(ListView):
     model = models.ProductType
 
 
-class ProductView(ListView):
-    page_title = 'Products'
-    model = models.Product
-
-    def get_queryset(self):
-        product_type = self.kwargs.get('type')
-        if product_type:
-            return models.Product.objects.filter(type__id=product_type)
-        return models.Product.objects.all()
+class ProductTypeDetailView(DetailView):
+    def page_title(self):
+        return self.object
+    model = models.ProductType
+    #
+    # def get_queryset(self):
+    #     product_type = self.kwargs.get('type')
+    #     if product_type:
+    #         return models.Product.objects.filter(type__id=product_type)
+    #     return models.Product.objects.all()
 
 
 class ProductDetail(SingleObjectMixin, ListView):
@@ -38,5 +39,25 @@ class ProductDetail(SingleObjectMixin, ListView):
 
     def get_queryset(self):
         return models.Review.objects.filter(product__id=self.object.id)
+
+
+class ProductCreateView(CreateView):
+    form_class = forms.CreateProductForm
+    template_name = "reviews/product_form.html"
+
+    success_url = reverse_lazy('reviews:product_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        self.type = get_object_or_404(models.ProductType, id=kwargs['type'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['features'].queryset = models.Feature.objects.filter(type=self.type)
+        return form
+
+    def form_valid(self, form):
+        form.instance.type = self.request.type
+        return super().form_valid(form)
 
 
