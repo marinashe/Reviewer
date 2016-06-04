@@ -1,9 +1,44 @@
+from django.contrib.auth import authenticate, logout, login
 from django.core.urlresolvers import reverse_lazy
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, CreateView
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import ListView, CreateView, FormView, View
 from django.views.generic.detail import SingleObjectMixin, DetailView
 
 from . import models, forms
+
+
+class LoggedInMixin:
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            return redirect('login')
+        return super().dispatch(request, *args, **kwargs)
+
+
+class LoginView(FormView):
+    form_class = forms.LoginForm
+    template_name = 'login.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return redirect('reviews:detail')
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        user = authenticate(username=form.cleaned_data['username'],
+                            password=form.cleaned_data['password'])
+
+        if user is not None and user.is_active:
+            login(self.request, user)
+            return redirect('reviews:detail')
+
+        form.add_error(None, "Invalid user name or password")
+        return self.form_invalid(form)
+
+
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect("login")
 
 
 class ProductTypeView(ListView):
@@ -23,7 +58,7 @@ class ProductTypeDetailView(DetailView):
     #     return models.Product.objects.all()
 
 
-class ProductDetail(SingleObjectMixin, ListView):
+class ProductDetail(LoggedInMixin, SingleObjectMixin, ListView):
     page_title = 'Reviews'
     template_name = 'reviews/product_detail.html'
     model = models.Review
@@ -38,7 +73,12 @@ class ProductDetail(SingleObjectMixin, ListView):
         return context
 
     def get_queryset(self):
-        return models.Review.objects.filter(product__id=self.object.id)
+        return models.Review.objects.filter(product__id=self.object.id).order_by('-time')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
 
 
 class ProductCreateView(CreateView):
@@ -59,5 +99,4 @@ class ProductCreateView(CreateView):
     def form_valid(self, form):
         form.instance.type = self.request.type
         return super().form_valid(form)
-
 

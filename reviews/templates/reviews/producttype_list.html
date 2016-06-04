@@ -5,7 +5,7 @@
     <ul class="list-group">
 
         {% for object in object_list %}
-            <a href="{% url 'reviews:product_list' type=object.id %}"><li class="list-group-item">{{ object.name }}</li></a>
+            <a href="{% url 'reviews:product_list' pk=object.pk %}"><li class="list-group-item">{{ object.name }}</li></a>
 
         {% endfor %}
     </ul>
