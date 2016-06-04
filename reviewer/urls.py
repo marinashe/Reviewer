@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'', include('reviews.urls')),
     url(r'^login/$', reviews.views.LoginView.as_view(), name="login"),
     url(r'^logout/$', reviews.views.LogoutView.as_view(), name="logout"),
+    url(r'^user/(?P<pk>[0-9]+)$', reviews.views.UserProfileDetail.as_view(), name='profile_detail'),
 
 ]

@@ -2,26 +2,16 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.conf import settings
-from registration.signals import user_registered
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
-    homepage = models.URLField()
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
 
-    def assure_user_profile_exists(pk):
-        user = User.objects.get(pk=pk)
-        try:
-            userprofile = user.userprofile
-        except UserProfile.DoesNotExist:
-            userprofile = UserProfile(user=user)
-            userprofile.save()
-        return
+    def __str__(self):
+        return self.name
 
-    def create_user_profile(**kwargs):
-        UserProfile.objects.get_or_create(user=kwargs['user'])
-
-    user_registered.connect(create_user_profile)
 
 
 class ProductType(models.Model):
@@ -69,7 +59,7 @@ class ProductFeature(models.Model):
 class Review(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(UserProfile)
     text = models.CharField(max_length=2000, null=True, blank=True)
     scores = models.ManyToManyField(Score, through='ReviewScore')
 

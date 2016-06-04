@@ -90,7 +90,7 @@ class ReviewAdmin(admin.ModelAdmin):
     get_type.short_description = 'Type'
     get_type.admin_order_field = 'product__type'
 
-
+admin.site.register(models.UserProfile)
 admin.site.register(models.Product, ProductAdmin)
 admin.site.register(models.ProductType, ProductTypeAdmin)
 admin.site.register(models.Feature, FeatureAdmin)
