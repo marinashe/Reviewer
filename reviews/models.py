@@ -1,6 +1,27 @@
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.conf import settings
+from registration.signals import user_registered
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
+    homepage = models.URLField()
+
+    def assure_user_profile_exists(pk):
+        user = User.objects.get(pk=pk)
+        try:
+            userprofile = user.userprofile
+        except UserProfile.DoesNotExist:
+            userprofile = UserProfile(user=user)
+            userprofile.save()
+        return
+
+    def create_user_profile(**kwargs):
+        UserProfile.objects.get_or_create(user=kwargs['user'])
+
+    user_registered.connect(create_user_profile)
 
 
 class ProductType(models.Model):

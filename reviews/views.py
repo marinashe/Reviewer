@@ -15,6 +15,8 @@ class LoggedInMixin:
 
 
 class LoginView(FormView):
+    page_title = 'Login'
+
     form_class = forms.LoginForm
     template_name = 'login.html'
 
@@ -38,10 +40,10 @@ class LoginView(FormView):
 class LogoutView(View):
     def get(self, request):
         logout(request)
-        return redirect("login")
+        return redirect("reviews:type_list")
 
 
-class ProductTypeView(LoggedInMixin, ListView):
+class ProductTypeView(ListView):
     page_title = 'Unified Reviews System'
     model = models.ProductType
 
@@ -50,7 +52,7 @@ class ProductTypeView(LoggedInMixin, ListView):
         return super().form_valid(form)
 
 
-class ProductTypeDetailView(LoggedInMixin, DetailView):
+class ProductTypeDetailView(DetailView):
     def page_title(self):
         return self.object
     model = models.ProductType
@@ -66,7 +68,7 @@ class ProductTypeDetailView(LoggedInMixin, DetailView):
     #     return models.Product.objects.all()
 
 
-class ProductDetail(LoggedInMixin, SingleObjectMixin, ListView):
+class ProductDetail(SingleObjectMixin, ListView):
     page_title = 'Reviews'
     template_name = 'reviews/product_detail.html'
     model = models.Review
@@ -90,6 +92,8 @@ class ProductDetail(LoggedInMixin, SingleObjectMixin, ListView):
 
 
 class ProductCreateView(LoggedInMixin, CreateView):
+    page_title = 'Add Product'
+
     form_class = forms.CreateProductForm
     template_name = "reviews/product_form.html"
 
