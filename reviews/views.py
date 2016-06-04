@@ -20,7 +20,7 @@ class LoginView(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated():
-            return redirect('reviews:detail')
+            return redirect('reviews:type_list')
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -29,7 +29,7 @@ class LoginView(FormView):
 
         if user is not None and user.is_active:
             login(self.request, user)
-            return redirect('reviews:detail')
+            return redirect('reviews:type_list')
 
         form.add_error(None, "Invalid user name or password")
         return self.form_invalid(form)
@@ -41,15 +41,23 @@ class LogoutView(View):
         return redirect("login")
 
 
-class ProductTypeView(ListView):
+class ProductTypeView(LoggedInMixin, ListView):
     page_title = 'Unified Reviews System'
     model = models.ProductType
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-class ProductTypeDetailView(DetailView):
+
+class ProductTypeDetailView(LoggedInMixin, DetailView):
     def page_title(self):
         return self.object
     model = models.ProductType
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
     #
     # def get_queryset(self):
     #     product_type = self.kwargs.get('type')
@@ -81,7 +89,7 @@ class ProductDetail(LoggedInMixin, SingleObjectMixin, ListView):
 
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoggedInMixin, CreateView):
     form_class = forms.CreateProductForm
     template_name = "reviews/product_form.html"
 
@@ -98,5 +106,6 @@ class ProductCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.type = self.request.type
+        form.instance.user = self.request.user
         return super().form_valid(form)
 

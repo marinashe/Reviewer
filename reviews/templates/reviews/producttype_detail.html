@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="row top-products-list">
-        <a href="{% url "reviews:type_list" %}">List</a>
-        |
-        <a href="{% url "reviews:create_product" object.id %}">Add Product</a>
+    <div class="row top-products-list ">
+        <a href="{% url "reviews:type_list" %}" class="class-left"><i class="fa fa-arrow-circle-left fa-2x">Back to List</i></a>
+        <a href="{% url "reviews:create_product" object.id %}" class="class-right"><i class="fa fa-plus-circle fa-2x">Add Product</i></a>
     </div>
+    <br><br>
     <div class="row">
     <ul class="list-group">
         {% if object.product_set.all %}

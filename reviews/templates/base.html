@@ -20,13 +20,14 @@
                     <img style="max-width:200px; margin-top: -10px;" src="/static/logo.png">
                     </a>
                 </span>
-            </div>
-            <ul class="nav navbar-nav navbar-right navbar-ul">
+                <div class="nav navbar-nav navbar-ul">
 
-                <li class="default">
-                    <b><i class="fa fa-user"></i>{{ user }}</b>
-                </li>
-            </ul>
+                    <span class="default ">
+                        <b><i class="fa fa-user"></i>{{ user }}  </b>|<a href="{% url 'logout' %}">  Logout</a>
+                    </span>
+                </div>
+            </div>
+
         </div>
     </nav>
 
