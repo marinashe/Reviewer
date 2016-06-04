@@ -3,8 +3,8 @@
 {% block content %}
     <a href="{% url "reviews:type_list" %}" class="class-left"><i class="fa fa-arrow-circle-left fa-2x">Back to List</i></a>
     <br>
-    <h4>Name: {{ object.name }}</h4>
-    <h4>Email: {{ object.email}}</h4>
+    <h4>Name: {{ object.user.first_name }}</h4>
+    <h4>Email: {{ object.user.email}}</h4>
 
 
 {% endblock %}

@@ -22,11 +22,11 @@
                 </span>
                 <div class="nav navbar-nav navbar-ul">
                     {% if user.id %}
-                        <span class="default ">
-                           <a href="{% url 'profile_detail' pk=user.pk %}"><b><i class="fa fa-user"></i>{{ user }}  </b></a>|<a href="{% url 'logout' %}">  Logout</a>
+                        <span class="default">
+                           <a href="{% url 'reviews:profile_detail' pk=user.pk %}"><b><i class="fa fa-user"></i>{{ user }}  </b></a>|<a href="{% url 'logout' %}">  Logout</a>
                         </span>
                     {% else %}
-                        <a href="{% url 'login' %}">Login</a>
+                        <a href="{% url 'login' %}">Login</a> |  <a href="{% url 'reviews:profile_create' %}">Sign Up</a>
                     {% endif %}
                 </div>
             </div>

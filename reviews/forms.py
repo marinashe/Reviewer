@@ -1,5 +1,7 @@
 from django import forms
 from django.forms import formset_factory
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 
 from . import models
 
@@ -25,3 +27,22 @@ class CreateProductForm(forms.ModelForm):
             'features',
         )
 
+
+class RegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    name = forms.CharField(required=False)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+
+    def save(self, commit=True):
+        user = super(RegistrationForm, self).save(commit=False)
+        user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['name']
+
+        if commit:
+            user.save()
+        models.UserProfile(user=user, id=user.id).save()
+
+        return user

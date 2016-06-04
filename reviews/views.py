@@ -113,5 +113,22 @@ class ProductCreateView(LoggedInMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+
 class UserProfileDetail(DetailView):
     model = models.UserProfile
+
+
+class UserProfileCreate(CreateView):
+    form_class = forms.RegistrationForm
+    template_name = "reviews/userprofile_form.html"
+
+    def form_valid(self, form):
+        self.username = form.cleaned_data['username']
+        self.password = form.cleaned_data['password1']
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        user = authenticate(username=self.username, password=self.password)
+        login(self.request, user)
+        return reverse_lazy('reviews:type_list')

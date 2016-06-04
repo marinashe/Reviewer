@@ -14,7 +14,11 @@
                     <b>{{ object.user }}</b> {{ object.time }}
                     <br>
                     {% for score in object.reviewscore_set.all %}
-                        {{ score.score.name }} - {{ score.value }} <br>
+                        {{ score.score.name }} -
+                        {% for s in range(score.value) %}
+
+                        {% endfor %}
+                        <br>
                     {% endfor %}
                     {{ object.text }}
                     <br>
