@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load product_extras %}
+
 {% block content %}
 
     <h1>{{ product.name }}</h1>
@@ -15,8 +17,11 @@
                     <br>
                     {% for score in object.reviewscore_set.all %}
                         {{ score.score.name }} -
-                        {% for s in range(score.value) %}
-
+                        {% for s in score.value|full_stars %}
+                            <i class="fa fa-star"></i>
+                        {% endfor %}
+                        {% for s in score.value|empty_stars %}
+                            <i class="fa fa-star-o"></i>
                         {% endfor %}
                         <br>
                     {% endfor %}

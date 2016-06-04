@@ -89,6 +89,8 @@ class ProductDetail(SingleObjectMixin, ListView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+    def foo(self, x):
+        return "xxx"
 
 
 class ProductCreateView(LoggedInMixin, CreateView):

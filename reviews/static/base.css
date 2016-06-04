@@ -16,3 +16,7 @@
 .class-left {
     float: left;
 }
+
+.fa-star, .fa-star-o {
+    color: gold;
+}
