@@ -22,8 +22,9 @@ class LoginView(FormView):
     template_name = 'login.html'
 
     def dispatch(self, request, *args, **kwargs):
+        self.redirect_to = request.GET['next']
         if request.user.is_authenticated():
-            return redirect('reviews:type_list')
+            return HttpResponseRedirect(self.redirect_to)
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -32,7 +33,7 @@ class LoginView(FormView):
 
         if user is not None and user.is_active:
             login(self.request, user)
-            return redirect('reviews:type_list')
+            return HttpResponseRedirect(self.redirect_to)
 
         form.add_error(None, "Invalid user name or password")
         return self.form_invalid(form)
