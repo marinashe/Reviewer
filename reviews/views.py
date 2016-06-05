@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, logout, login
 from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, FormView, View
 from django.views.generic.detail import SingleObjectMixin, DetailView
@@ -99,21 +100,33 @@ class ProductCreateView(LoggedInMixin, CreateView):
     form_class = forms.CreateProductForm
     template_name = "reviews/product_form.html"
 
-    success_url = reverse_lazy('reviews:product_list')
-
     def dispatch(self, request, *args, **kwargs):
-        self.type = get_object_or_404(models.ProductType, id=kwargs['type'])
+        self.producttype = get_object_or_404(models.ProductType, id=kwargs['type'])
         return super().dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.fields['features'].queryset = models.Feature.objects.filter(type=self.type)
+        for feature in models.Feature.objects.filter(type=self.producttype):
+            form.add_feature(feature)
         return form
 
     def form_valid(self, form):
-        form.instance.type = self.request.type
+
+        form.instance.type = self.producttype
         form.instance.user = self.request.user
+
+        resp = super().form_valid(form)
+
+        for f in models.Feature.objects.filter(type=form.instance.type):
+            models.ProductFeature.objects.create(
+                product=form.instance,
+                value=form.cleaned_data['feature_{}'.format(f.id)],
+                feature=f,
+            )
         return super().form_valid(form)
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('reviews:product_list', kwargs={'pk': self.producttype.pk})
 
 
 class UserProfileDetail(DetailView):
@@ -142,18 +155,32 @@ class ReviewCreateView(LoggedInMixin, CreateView):
     form_class = forms.CreateReviewForm
     template_name = "reviews/review_form.html"
 
-    success_url = reverse_lazy('reviews:product_detail')
 
     def dispatch(self, request, *args, **kwargs):
-        self.type = get_object_or_404(models.ProductType, id=kwargs['type'])
+        self.producttype = get_object_or_404(models.ProductType, id=kwargs['type'])
+        self.productid = get_object_or_404(models.Product, id=kwargs['pk'])
         return super().dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.fields['scores'].queryset = models.Score.objects.filter(type=self.type)
+        for score in models.Score.objects.filter(type=self.producttype):
+            form.add_score(score)
         return form
 
     def form_valid(self, form):
-        form.instance.type = self.request.type
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+        form.instance.product = self.productid
+        form.instance.user = models.UserProfile.objects.filter(user=self.request.user)[0]
+
+        resp = super().form_valid(form)
+
+        for f in models.Score.objects.filter(type=self.producttype):
+            models.ReviewScore.objects.create(
+                review=form.instance,
+                value=form.cleaned_data['score_{}'.format(f.id)],
+                score=f,
+            )
+        return resp
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('reviews:detail', kwargs={'type': self.producttype.pk, 'pk': self.productid.id})
+

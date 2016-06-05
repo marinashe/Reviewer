@@ -24,17 +24,24 @@ class CreateProductForm(forms.ModelForm):
         model = models.Product
         fields = (
             'name',
-            'features',
+            'description',
         )
+
+    def add_feature(self, feature):
+        self.fields["feature_{}".format(feature.id)] = forms.CharField(label=feature.name, max_length=100)
+
 
 class CreateReviewForm(forms.ModelForm):
 
     class Meta:
         model = models.Review
         fields = (
-            'scores',
             'text',
         )
+
+    def add_score(self, score):
+        self.fields["score_{}".format(score.id)] = forms.IntegerField(label=score.name)
+
 
 
 class RegistrationForm(UserCreationForm):
