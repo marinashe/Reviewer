@@ -27,6 +27,15 @@ class CreateProductForm(forms.ModelForm):
             'features',
         )
 
+class CreateReviewForm(forms.ModelForm):
+
+    class Meta:
+        model = models.Review
+        fields = (
+            'scores',
+            'text',
+        )
+
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)

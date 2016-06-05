@@ -134,3 +134,26 @@ class UserProfileCreate(CreateView):
         user = authenticate(username=self.username, password=self.password)
         login(self.request, user)
         return reverse_lazy('reviews:type_list')
+
+
+class ReviewCreateView(LoggedInMixin, CreateView):
+    page_title = 'Add Review'
+
+    form_class = forms.CreateReviewForm
+    template_name = "reviews/review_form.html"
+
+    success_url = reverse_lazy('reviews:product_detail')
+
+    def dispatch(self, request, *args, **kwargs):
+        self.type = get_object_or_404(models.ProductType, id=kwargs['type'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['scores'].queryset = models.Score.objects.filter(type=self.type)
+        return form
+
+    def form_valid(self, form):
+        form.instance.type = self.request.type
+        form.instance.user = self.request.user
+        return super().form_valid(form)

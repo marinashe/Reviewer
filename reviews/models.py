@@ -8,7 +8,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.id) + self.user.first_name
+        return self.user.first_name
 
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
