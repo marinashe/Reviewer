@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, logout, login
 from django.core.urlresolvers import reverse_lazy
+from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, FormView, View
@@ -53,6 +54,10 @@ class ProductTypeView(ListView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+    def product_count(self):
+        assert 0, models.ProductType.objects.annotate(count_product=Count('product_set'))
+        return models.Product.objects.values('type').annotate(Count('type'))['type__count']
+
 
 class ProductTypeDetailView(DetailView):
     def page_title(self):
@@ -62,12 +67,7 @@ class ProductTypeDetailView(DetailView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
-    #
-    # def get_queryset(self):
-    #     product_type = self.kwargs.get('type')
-    #     if product_type:
-    #         return models.Product.objects.filter(type__id=product_type)
-    #     return models.Product.objects.all()
+
 
 
 class ProductDetail(SingleObjectMixin, ListView):

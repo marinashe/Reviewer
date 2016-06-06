@@ -3,10 +3,20 @@
 
 
 {% block content %}
+     <div class="row top-products-list ">
 
     <form method="post">
         {% csrf_token %}
-        {% bootstrap_form form %}
+{#        {% bootstrap_form form %}#}
+        {% for field in form %}
+            <div class="fieldWrapper">
+                {{ field.errors }}
+                {% bootstrap_field field %}
+                {% if field.help_text %}
+                <p class="help">{% bootstrap_field field.help_text|safe %}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
         {% buttons %}
             <button type="submit" class="btn btn-primary">
                 Save {% bootstrap_icon "save" %}

@@ -12,22 +12,24 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/static/base.css" >
-    <nav class="navbar navbar-default navbar-static-top navbar-base">
+    <nav class="navbar navbar-default navbar-static-top">
         <div class="container-fluid">
             <div class="navbar-header">
                 <span class="navbar-brand">
                     <a href="">
-                    <img style="max-width:200px; margin-top: -10px;" src="/static/logo.png">
+                    <img style="max-width:150px; margin-top: -10px;" src="/static/logo.png" class="img-responsive">
                     </a>
                 </span>
                 <div class="nav navbar-nav navbar-ul">
-                    {% if user.id %}
-                        <span class="default">
-                           <a href="{% url 'reviews:profile_detail' pk=user.pk %}"><b><i class="fa fa-user"></i>{{ user }}  </b></a>|<a href="{% url 'logout' %}">  Logout</a>
-                        </span>
-                    {% else %}
-                        <a href="{% url 'login' %}?next={{ request.path }}">Login</a> |  <a href="{% url 'reviews:profile_create' %}">Sign Up</a>
-                    {% endif %}
+                    <span class="default login-span">
+                        {% if user.id %}
+
+                               <a href="{% url 'reviews:profile_detail' pk=user.pk %}"><b><i class="fa fa-user"></i>{{ user }}  </b></a>|<a href="{% url 'logout' %}">  Logout</a>
+                        {% else %}
+                                <a href="{% url 'login' %}?next={{ request.path }}">Login</a> |  <a href="{% url 'reviews:profile_create' %}">Sign Up</a>
+                        {% endif %}
+                    </span>
+
                 </div>
             </div>
 

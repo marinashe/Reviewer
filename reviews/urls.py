@@ -1,5 +1,6 @@
 from django.conf.urls import url
 
+from reviewer import settings
 from . import views
 from . import models
 
@@ -13,4 +14,5 @@ urlpatterns = [
     url(r'^(?P<type>[0-9]+)/(?P<pk>[0-9]+)/add_review', views.ReviewCreateView.as_view(), name="create_review"),
     url(r'^user/(?P<pk>[0-9]+)$', views.UserProfileDetail.as_view(), name='profile_detail'),
     url(r'^user/create$', views.UserProfileCreate.as_view(), name='profile_create'),
+    # static(document_root=settings.MEDIA_ROOT),
 ]

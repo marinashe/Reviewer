@@ -2,19 +2,19 @@
 
 {% block content %}
     <div class="row top-products-list ">
-        <a href="{% url "reviews:type_list" %}" class="class-left"><i class="fa fa-arrow-circle-left fa-2x">Back to List of all products</i></a>
-        <a href="{% url "reviews:create_product" object.id %}" class="class-right"><i class="fa fa-plus-circle fa-2x">Add Product</i></a>
+        <a href="{% url "reviews:type_list" %}" class="navig-left"><i class="fa fa-arrow-circle-left">Back</i></a>
+        <a href="{% url "reviews:create_product" object.id %}" class="navig-right"><i class="fa fa-plus-circle">Add Product</i></a>
     </div>
-    <br><br>
+    <br>
     <div class="row">
     <ul class="list-group">
         {% if object.product_set.all %}
             {% for product in object.product_set.all %}
 
-                 <a href="{{ product.get_absolute_url }}">
-                     <li class="list-group-item">
-                         {{ product.name }}
-                     </li>
+                 <a href="{{ product.get_absolute_url }}" class="list-group-item list-view">
+                    {{ product.name }}
+                    <span class="badge">{{ product.review_set.count }}</span>
+
                  </a>
             {% endfor %}
         {% else %}

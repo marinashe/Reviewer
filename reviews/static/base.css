@@ -1,22 +1,50 @@
-.navbar-base {
-
-    height: 75px;
-}
-
 .navbar-ul {
     margin-left: 25px;
     margin-top: 40px;
     margin-right: 5px;
 }
 
-.class-right {
+.navig-right {
     float: right;
+    font-size: large;
+    margin-right: 10px;
 }
 
-.class-left {
+.navig-left {
     float: left;
+    font-size: large;
+    margin-left: 10px;
 }
 
 .fa-star, .fa-star-o {
     color: gold;
+}
+
+.list-view {
+    font-size: x-large;
+}
+
+.tile {
+    width: 100%;
+    display: inline-block;
+    box-sizing: border-box;
+    background: red;
+    padding: 20px;
+    margin-bottom: 30px;
+    font-size: x-large;
+    text-align: center;
+}
+
+.tile:hover {
+			background: darkred;
+		}
+
+.tile-text {
+    color: white;
+}
+
+.login-span {
+    float: right;
+    margin-right: 5px;
+    margin-bottom: 10px;
 }

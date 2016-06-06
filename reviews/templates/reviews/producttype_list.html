@@ -2,12 +2,18 @@
 
 {% block content %}
 
-    <ul class="list-group">
+
 
         {% for object in object_list %}
-            <a href="{% url 'reviews:product_list' pk=object.pk %}"><li class="list-group-item">{{ object.name }}</li></a>
-
+            <a href="{% url 'reviews:product_list' pk=object.pk %}" >
+                <div class=" col-xs-12 col-sm-6 col-md-4">
+                    <div class="tile">
+                        <img src={{ object.picture.url }} class="img-responsive">
+                        <p class="tile-text">{{ object.name }}</p>
+                    </div>
+                </div>
+            </a>
         {% endfor %}
-    </ul>
+
 
 {% endblock %}

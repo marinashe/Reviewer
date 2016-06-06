@@ -3,41 +3,49 @@
 {% load product_extras %}
 
 {% block content %}
-        <div class="row top-products-list ">
-        <a href="{% url "reviews:product_list" pk=product.type.pk %}" class="class-left"><i class="fa fa-arrow-circle-left fa-2x">Back to List of {{ product.type.name }}</i></a>
-        <a href="{% url "reviews:create_review" type=product.type.id pk=product.pk %}" class="class-right"><i class="fa fa-plus-circle fa-2x">Add Review</i></a>
+    <div class="row top-products-list ">
+        <a href="{% url "reviews:product_list" pk=product.type.pk %}" class="navig-left"><i class="fa fa-arrow-circle-left ">Back</i></a>
+        <a href="{% url "reviews:create_review" type=product.type.id pk=product.pk %}" class="navig-right"><i class="fa fa-plus-circle ">Add Review</i></a>
     </div>
-    <br><br>
+    <div class="row">
     <h1>{{ product.name }}</h1>
     {% for feature in product.productfeature_set.all %}
         <b>{{ feature.feature.name }}</b>: {{ feature.value }} <br>
     {% endfor %}
-    <ul class="list-group">
-        {% if object_list.count %}
-            {% for object in object_list %}
+    </div>
+    <br>
+    <div class="row">
+        <ul class="list-group">
+            {% if object_list.count %}
+                {% for object in object_list %}
 
-                <li class="list-group-item">
-                    <b>{{ object.user }}</b> {{ object.time }}
-                    <br>
-                    {% for score in object.reviewscore_set.all %}
-                        {{ score.score.name }} -
-                        {% for s in score.value|full_stars %}
-                            <i class="fa fa-star"></i>
-                        {% endfor %}
-                        {% for s in score.value|empty_stars %}
-                            <i class="fa fa-star-o"></i>
-                        {% endfor %}
+                    <li class="list-group-item">
+                        <b>{{ object.user }}</b> {{ object.time }}
                         <br>
-                    {% endfor %}
-                    {{ object.text }}
-                    <br>
-                </li>
+                        {% for score in object.reviewscore_set.all %}
+                            <span class="col-xs-3 col-md-1">
+                                {{ score.score.name }}
+                            </span>
+                            <span class="col-xs-9 col-md-11">
+                                {% for s in score.value|full_stars %}
+                                    <i class="fa fa-star"></i>
+                                {% endfor %}
+                                {% for s in score.value|empty_stars %}
+                                    <i class="fa fa-star-o"></i>
+                                {% endfor %}
+                            </span>
+                            <br>
+                        {% endfor %}
+                        {{ object.text }}
+                        <br>
+                    </li>
 
 
-            {% endfor %}
-        {% else %}
-            No reviews.
-        {% endif %}
-    </ul>
+                {% endfor %}
+            {% else %}
+                No reviews.
+            {% endif %}
+        </ul>
+    </div>
 
 {% endblock %}
