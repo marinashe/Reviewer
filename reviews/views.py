@@ -11,7 +11,7 @@ from . import models, forms
 class LoggedInMixin:
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated():
-            return redirect('login')
+            return redirect(reverse_lazy('login') + '?next={}'.format(request.path))
         return super().dispatch(request, *args, **kwargs)
 
 
