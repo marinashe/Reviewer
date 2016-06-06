@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% load product_extras %}
+{% load humanize %}
+
 
 {% block content %}
     <div class="row top-products-list ">
@@ -20,7 +22,8 @@
                 {% for object in object_list %}
 
                     <li class="list-group-item">
-                        <b>{{ object.user }}</b> {{ object.time }}
+                        <b>{{ object.user }}</b>
+                        {{ object.time|naturaltime }}
                         <br>
                         {% for score in object.reviewscore_set.all %}
                             <span class="col-xs-3 col-md-1">

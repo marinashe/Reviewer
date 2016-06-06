@@ -32,7 +32,8 @@ class CreateProductForm(forms.ModelForm):
 
 
 class CreateReviewForm(forms.ModelForm):
-
+    text = forms.CharField(widget=forms.Textarea, required=False)
+    
     class Meta:
         model = models.Review
         fields = (
