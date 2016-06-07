@@ -28,7 +28,7 @@
     width: 100%;
     display: inline-block;
     box-sizing: border-box;
-    background: red;
+    background: cornflowerblue;
     padding: 20px;
     margin-bottom: 30px;
     font-size: x-large;
@@ -36,7 +36,7 @@
 }
 
 .tile:hover {
-			background: darkred;
+			background: darkblue;
 		}
 
 .tile-text {
@@ -47,4 +47,14 @@
     float: right;
     margin-right: 5px;
     margin-bottom: 10px;
+}
+
+.review-name {
+
+        font-size: larger;
+}
+
+.review-hr {
+
+    border-color: darkblue;
 }

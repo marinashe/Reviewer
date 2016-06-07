@@ -11,9 +11,11 @@
     </div>
     <div class="row">
     <h1>{{ product.name }}</h1>
+    <ul>
     {% for feature in product.productfeature_set.all %}
-        <b>{{ feature.feature.name }}</b>: {{ feature.value }} <br>
+        <li><b>{{ feature.feature.name }}</b>: {{ feature.value }} </li>
     {% endfor %}
+    </ul>
     </div>
     <br>
     <div class="row">
@@ -22,8 +24,8 @@
                 {% for object in object_list %}
 
                     <li class="list-group-item">
-                        <b>{{ object.user }}</b>
-                        {{ object.time|naturaltime }}
+                        <b class="review-name">{{ object.user }}</b>
+                        <i>{{ object.time|naturaltime }}</i>
                         <br>
                         {% for score in object.reviewscore_set.all %}
                             <span class="col-xs-3 col-md-1">
@@ -39,6 +41,7 @@
                             </span>
                             <br>
                         {% endfor %}
+                        <hr class="review-hr">
                         {{ object.text }}
                         <br>
                     </li>
