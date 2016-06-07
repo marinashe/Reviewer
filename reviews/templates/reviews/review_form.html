@@ -7,6 +7,9 @@
 
 {% block content %}
     <div class="row top-products-list ">
+        <a href="{{request.META.HTTP_REFERER}}" class="navig-left"><i class="fa fa-arrow-circle-left ">Back</i></a>
+    </div>
+    <div class="row top-products-list ">
 
     <form method="post">
         {% csrf_token %}
