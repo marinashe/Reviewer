@@ -54,9 +54,6 @@ class ProductTypeView(ListView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-    def product_count(self):
-        assert 0, models.ProductType.objects.annotate(count_product=Count('product_set'))
-        return models.Product.objects.values('type').annotate(Count('type'))['type__count']
 
 
 class ProductTypeDetailView(DetailView):
@@ -67,6 +64,8 @@ class ProductTypeDetailView(DetailView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+
 
 
 
@@ -90,9 +89,6 @@ class ProductDetail(SingleObjectMixin, ListView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
-
-    def foo(self, x):
-        return "xxx"
 
 
 class ProductCreateView(LoggedInMixin, CreateView):
@@ -155,7 +151,6 @@ class ReviewCreateView(LoggedInMixin, CreateView):
 
     form_class = forms.CreateReviewForm
     template_name = "reviews/review_form.html"
-
 
     def dispatch(self, request, *args, **kwargs):
         self.producttype = get_object_or_404(models.ProductType, id=kwargs['type'])

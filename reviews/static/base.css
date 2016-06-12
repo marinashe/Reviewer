@@ -58,3 +58,9 @@
 
     border-color: darkblue;
 }
+
+.badge-product {
+    background: blue;
+    margin-top: 5px;
+    font-size: smaller;
+}

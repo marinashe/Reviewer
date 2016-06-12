@@ -52,6 +52,15 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse("reviews:detail", args=(self.type.id, self.pk))
 
+    def avg_score(self):
+        sum = 0
+        count = 0
+        for r in Review.objects.filter(product=self):
+            for s in ReviewScore.objects.filter(review=r):
+                sum += int(s.value)
+                count += 1
+        return sum/count if count != 0 else 0
+
 
 class ProductFeature(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
