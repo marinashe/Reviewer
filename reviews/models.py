@@ -75,6 +75,9 @@ class Review(models.Model):
     text = models.CharField(max_length=2000, null=True, blank=True)
     scores = models.ManyToManyField(Score, through='ReviewScore')
 
+    class Meta:
+        unique_together = ('product', 'user',)
+
 
 class ReviewScore(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE)

@@ -43,6 +43,20 @@ class CreateReviewForm(forms.ModelForm):
     def add_score(self, score):
         self.fields["score_{}".format(score.id)] = forms.IntegerField(label=score.name)
 
+    def add_all_score(self, product_type):
+        for score in models.Score.objects.filter(type=product_type):
+            self.fields["score_{}".format(score.id)] = forms.IntegerField(label=score.name)
+
+
+class UpdateReviewForm(forms.ModelForm):
+    text = forms.CharField(widget=forms.Textarea, required=False)
+
+    class Meta:
+        model = models.Review
+        fields = (
+            'text',
+
+        )
 
 
 class RegistrationForm(UserCreationForm):

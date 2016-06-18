@@ -13,7 +13,7 @@
                  <a href="{{ product.get_absolute_url }}" class="list-group-item list-view">
                     {{ product.name }}
                      {% if product.avg_score != 0 %}
-                        <i class="fa fa-star">{{ product.avg_score }}</i>
+                        <i class="fa fa-star"> {{ product.avg_score }}/10</i>
                      {% endif %}
                     <span class="badge badge-product">{{ product.review_set.count }}</span>
 

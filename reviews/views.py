@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, FormView, View
 from django.views.generic.detail import SingleObjectMixin, DetailView
+from django.views.generic.edit import UpdateView
 
 from . import models, forms
 
@@ -78,10 +79,18 @@ class ProductDetail(SingleObjectMixin, ListView):
         self.object = self.get_object(queryset=models.Product.objects.filter(id=self.kwargs.get('pk')))
         return super(ProductDetail, self).get(request, *args, **kwargs)
 
+    def get_form(self):
+        form = forms.CreateReviewForm()
+        form.add_all_score(product_type=self.object.type)
+        return form
+
     def get_context_data(self, **kwargs):
         context = super(ProductDetail, self).get_context_data(**kwargs)
         context['product'] = self.object
+        context['form'] = self.get_form()
         return context
+
+
 
     def get_queryset(self):
         return models.Review.objects.filter(product__id=self.object.id).order_by('-time')
@@ -180,3 +189,22 @@ class ReviewCreateView(LoggedInMixin, CreateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('reviews:detail', kwargs={'type': self.producttype.pk, 'pk': self.productid.id})
 
+
+class ReviewUpdateView(LoggedInMixin, UpdateView):
+    form_class = forms.UpdateReviewForm
+    template_name_suffix = '_update_form'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.producttype = get_object_or_404(models.ProductType, id=kwargs['type'])
+        self.user = get_object_or_404(models.UserProfile, id=kwargs['user'])
+        self.productid = get_object_or_404(models.Product, id=kwargs['pk'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return models.Review.objects.filter(product__id=self.productid.id, user__id=self.user.id)
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('reviews:detail', kwargs={'type': self.producttype.pk, 'pk': self.productid.id})
