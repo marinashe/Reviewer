@@ -59,7 +59,7 @@ class Product(models.Model):
             for s in ReviewScore.objects.filter(review=r):
                 sum += int(s.value)
                 count += 1
-        return sum/count if count != 0 else 0
+        return '%.2f' %(sum/count, ) if count != 0 else 0
 
 
 class ProductFeature(models.Model):
@@ -77,6 +77,10 @@ class Review(models.Model):
 
     class Meta:
         unique_together = ('product', 'user',)
+
+    def __str__(self):
+        return self.id + '_' + self.product
+
 
 
 class ReviewScore(models.Model):

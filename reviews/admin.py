@@ -76,6 +76,7 @@ class ReviewAdmin(admin.ModelAdmin):
         'product__name',
     )
     list_display = (
+        'id',
         'time',
         'get_type',
         'product',

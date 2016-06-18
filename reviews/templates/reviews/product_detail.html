@@ -13,7 +13,6 @@
 {% block content %}
     <div class="row top-products-list ">
         <a href="{% url "reviews:product_list" pk=product.type.pk %}" class="navig-left"><i class="fa fa-arrow-circle-left ">Back</i></a>
-            <a href="{% url "reviews:create_review" type=product.type.id pk=product.pk %}" class="navig-right"><i class="fa fa-plus-circle ">Add Review</i></a>
     </div>
     <div class="row">
     <h1>{{ product.name }}</h1>
@@ -25,34 +24,41 @@
     </div>
     <br>
     <div class="row" id="form_review">
-        {% if user.id %}
-             <form method="post">
-                {% csrf_token %}
-                {% for field in form %}
-                    <div class="fieldWrapper">
-                        {{ field.errors }}
-                        {%  if 'score' in field.name %}
-                            {{ field.label_tag }}
-                            <input id="id_{{ field.name }}" name="{{ field.name }}" type="text" class="rating" data-size="sm" data-max="10" data-step="1">
+        {% if user.id  and user.id not in users.id %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Add review</h3>
+                </div>
+                <div class="panel-body">
+                     <form method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="fieldWrapper">
+                                {{ field.errors }}
+                                {%  if 'score' in field.name %}
+                                    {{ field.label_tag }}
+                                    <input id="id_{{ field.name }}" name="{{ field.name }}" type="text" class="rating" data-size="xs" data-max="10" data-step="1">
 
-                        {% else %}
-                            {% bootstrap_field field %}
-                            {% if field.help_text %}
-                                <p class="help">{% bootstrap_field field.help_text|safe %}</p>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                {% endfor %}
-                {% buttons %}
-                    <button type="submit" class="btn btn-primary">
-                        Save {% bootstrap_icon "save" %}
-                    </button>
-                {% endbuttons %}
-            </form>
+                                {% else %}
+                                    {% bootstrap_field field %}
+                                    {% if field.help_text %}
+                                        <p class="help">{% bootstrap_field field.help_text|safe %}</p>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        {% buttons %}
+                            <button type="submit" class="btn btn-primary">
+                                Save {% bootstrap_icon "save" %}
+                            </button>
+                        {% endbuttons %}
+                    </form>
+                </div>
+            </div>
         {% endif %}
     </div>
     <div class="row">
-        <ul class="list-group">
+        <ul class="list-group" id="reviews">
             {% if object_list.count %}
                 {% for object in object_list %}
 
@@ -63,7 +69,7 @@
                         {% if user.id %}
                             {% if user.id == object.user.id %}
 
-                                <a href="{% url "reviews:update_review" type=product.type.id pk=product.pk user=object.user.id %}">Update</a>
+                                <a href="{% url "reviews:update_review" type=product.type.id product=product.id pk=object.id %}">Update</a>
 
                             {% endif %}
                         {% endif %}
@@ -100,6 +106,7 @@
 {% block script %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
 <script src="/static/js/star-rating.js" type="text/javascript"></script>
+
 <script type="text/javascript">
     $(".rating").rating({stars: 10, showCaption: false, showClear: false});
 </script>

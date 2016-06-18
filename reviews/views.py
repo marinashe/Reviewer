@@ -1,5 +1,7 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.core.urlresolvers import reverse_lazy
+from django.http import JsonResponse
 from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
@@ -88,16 +90,39 @@ class ProductDetail(SingleObjectMixin, ListView):
         context = super(ProductDetail, self).get_context_data(**kwargs)
         context['product'] = self.object
         context['form'] = self.get_form()
+        context['users'] = models.Review.objects.filter(product__id=self.object.id)
         return context
-
-
 
     def get_queryset(self):
         return models.Review.objects.filter(product__id=self.object.id).order_by('-time')
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=models.Product.objects.filter(id=self.kwargs.get('pk')))
+        form = forms.CreateReviewForm(request.POST)
+        if not form.is_valid():
+            pass
+            # return JsonResponse({
+            #     'errors': json.loads(form.errors.as_json()),
+            # }, status=400)
+        form.instance.product = self.object
+        form.instance.user = models.UserProfile.objects.filter(user=self.request.user)[0]
+        form.save()
+        for f in models.Score.objects.filter(type=self.object.type):
+            models.ReviewScore.objects.create(
+                review=form.instance,
+                value=request.POST['score_{}'.format(f.id)],
+                score=f,
+            )
+
+        if request.is_ajax():
+            # return JsonResponse({'status': 'ok'})
+            return render(request, "reviews/review_form.html", {
+                'text': form.instance,
+            })
+        messages.success(request, "Comments saved.")
+        return redirect(self.object)
+
+
 
 
 class ProductCreateView(LoggedInMixin, CreateView):
@@ -196,12 +221,12 @@ class ReviewUpdateView(LoggedInMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.producttype = get_object_or_404(models.ProductType, id=kwargs['type'])
-        self.user = get_object_or_404(models.UserProfile, id=kwargs['user'])
-        self.productid = get_object_or_404(models.Product, id=kwargs['pk'])
+        self.productid = get_object_or_404(models.Product, id=kwargs['product'])
+        self.reviewid = get_object_or_404(models.Review, id=kwargs['pk'])
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        return models.Review.objects.filter(product__id=self.productid.id, user__id=self.user.id)
+        return models.Review.objects.filter(id=self.reviewid.id)
 
     def form_valid(self, form):
         return super().form_valid(form)
