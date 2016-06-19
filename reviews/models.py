@@ -79,7 +79,7 @@ class Review(models.Model):
         unique_together = ('product', 'user',)
 
     def __str__(self):
-        return self.id + '_' + self.product
+        return 'Review about ' + self.product.name
 
 
 

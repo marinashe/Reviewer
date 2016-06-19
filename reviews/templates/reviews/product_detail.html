@@ -24,37 +24,40 @@
     </div>
     <br>
     <div class="row" id="form_review">
-        {% if user.id  and user.id not in users.id %}
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Add review</h3>
-                </div>
-                <div class="panel-body">
-                     <form method="post">
-                        {% csrf_token %}
-                        {% for field in form %}
-                            <div class="fieldWrapper">
-                                {{ field.errors }}
-                                {%  if 'score' in field.name %}
-                                    {{ field.label_tag }}
-                                    <input id="id_{{ field.name }}" name="{{ field.name }}" type="text" class="rating" data-size="xs" data-max="10" data-step="1">
+        {% if user.id %}
+            {% if user.id not in users %}
 
-                                {% else %}
-                                    {% bootstrap_field field %}
-                                    {% if field.help_text %}
-                                        <p class="help">{% bootstrap_field field.help_text|safe %}</p>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Add review</h3>
+                    </div>
+                    <div class="panel-body">
+                         <form method="post">
+                            {% csrf_token %}
+                            {% for field in form %}
+                                <div class="fieldWrapper">
+                                    {{ field.errors }}
+                                    {%  if 'score' in field.name %}
+                                        {{ field.label_tag }}
+                                        <input id="id_{{ field.name }}" name="{{ field.name }}" type="text" class="rating" data-size="xs" data-max="10" data-step="1">
+
+                                    {% else %}
+                                        {% bootstrap_field field %}
+                                        {% if field.help_text %}
+                                            <p class="help">{% bootstrap_field field.help_text|safe %}</p>
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                        {% buttons %}
-                            <button type="submit" class="btn btn-primary">
-                                Save {% bootstrap_icon "save" %}
-                            </button>
-                        {% endbuttons %}
-                    </form>
+                                </div>
+                            {% endfor %}
+                            {% buttons %}
+                                <button type="submit" class="btn btn-primary">
+                                    Save {% bootstrap_icon "save" %}
+                                </button>
+                            {% endbuttons %}
+                        </form>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
         {% endif %}
     </div>
     <div class="row">
@@ -70,6 +73,7 @@
                             {% if user.id == object.user.id %}
 
                                 <a href="{% url "reviews:update_review" type=product.type.id product=product.id pk=object.id %}">Update</a>
+                                | <a href="{% url "reviews:delete_review" type=product.type.id product=product.id pk=object.id %}">Delete</a>
 
                             {% endif %}
                         {% endif %}

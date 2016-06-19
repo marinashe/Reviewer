@@ -2,12 +2,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.core.urlresolvers import reverse_lazy
 from django.http import JsonResponse
-from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, FormView, View
 from django.views.generic.detail import SingleObjectMixin, DetailView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView
 
 from . import models, forms
 
@@ -90,7 +89,7 @@ class ProductDetail(SingleObjectMixin, ListView):
         context = super(ProductDetail, self).get_context_data(**kwargs)
         context['product'] = self.object
         context['form'] = self.get_form()
-        context['users'] = models.Review.objects.filter(product__id=self.object.id)
+        context['users'] = models.Review.objects.filter(product__id=self.object.id).values('user_id')
         return context
 
     def get_queryset(self):
@@ -102,7 +101,7 @@ class ProductDetail(SingleObjectMixin, ListView):
         if not form.is_valid():
             pass
             # return JsonResponse({
-            #     'errors': json.loads(form.errors.as_json()),
+            #      'errors': json.loads(form.errors.as_json()),
             # }, status=400)
         form.instance.product = self.object
         form.instance.user = models.UserProfile.objects.filter(user=self.request.user)[0]
@@ -121,7 +120,6 @@ class ProductDetail(SingleObjectMixin, ListView):
             })
         messages.success(request, "Comments saved.")
         return redirect(self.object)
-
 
 
 
@@ -230,6 +228,19 @@ class ReviewUpdateView(LoggedInMixin, UpdateView):
 
     def form_valid(self, form):
         return super().form_valid(form)
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('reviews:detail', kwargs={'type': self.producttype.pk, 'pk': self.productid.id})
+
+
+class ReviewDeleteView(DeleteView):
+    model = models.Review
+
+    def dispatch(self, request, *args, **kwargs):
+        self.producttype = get_object_or_404(models.ProductType, id=kwargs['type'])
+        self.productid = get_object_or_404(models.Product, id=kwargs['product'])
+        self.reviewid = get_object_or_404(models.Review, id=kwargs['pk'])
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('reviews:detail', kwargs={'type': self.producttype.pk, 'pk': self.productid.id})
