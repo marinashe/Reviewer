@@ -89,7 +89,7 @@ class ProductDetail(SingleObjectMixin, ListView):
         context = super(ProductDetail, self).get_context_data(**kwargs)
         context['product'] = self.object
         context['form'] = self.get_form()
-        context['users'] = models.Review.objects.filter(product__id=self.object.id).values('user_id')
+        context['users'] = [x['user_id'] for x in models.Review.objects.filter(product__id=self.object.id).values('user_id')]
         return context
 
     def get_queryset(self):
@@ -226,8 +226,21 @@ class ReviewUpdateView(LoggedInMixin, UpdateView):
     def get_queryset(self):
         return models.Review.objects.filter(id=self.reviewid.id)
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.add_all_score(self.reviewid.id)
+        return form
+
     def form_valid(self, form):
-        return super().form_valid(form)
+        form.instance.product = self.productid
+        form.instance.user = models.UserProfile.objects.filter(user=self.request.user)[0]
+
+        resp = super().form_valid(form)
+        for f in models.ReviewScore.objects.filter(review__id=self.reviewid.id):
+            models.ReviewScore.objects.filter(id=f.id).update(
+                value=form.cleaned_data['score_{}'.format(f.id)],
+            )
+        return resp
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('reviews:detail', kwargs={'type': self.producttype.pk, 'pk': self.productid.id})

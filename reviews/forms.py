@@ -58,6 +58,9 @@ class UpdateReviewForm(forms.ModelForm):
 
         )
 
+    def add_all_score(self, review_id):
+        for score in models.ReviewScore.objects.filter(review__id=review_id):
+            self.fields["score_{}".format(score.id)] = forms.IntegerField(label=score.score.name)
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
