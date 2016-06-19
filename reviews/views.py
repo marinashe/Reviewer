@@ -226,6 +226,13 @@ class ReviewUpdateView(LoggedInMixin, UpdateView):
     def get_queryset(self):
         return models.Review.objects.filter(id=self.reviewid.id)
 
+    def get_initial(self):
+        d = super().get_initial()
+        for f in models.ReviewScore.objects.filter(review__id=self.reviewid.id):
+            d['score_{}'.format(f.id)] = f.value
+
+        return d
+
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.add_all_score(self.reviewid.id)
